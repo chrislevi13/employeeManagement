@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Employee Management</h1>
+            <p>Admin Dashboard</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Form Section -->
+            <section class="glass-card form-section">
+                <h2>{% if edit_employee %}Edit Employee{% else %}Add New Employee{% endif %}</h2>
+                <form action="{% if edit_employee %}/update/{{ edit_employee.id }}{% else %}/add{% endif %}"
+                    method="POST">
+                    <div class="input-group">
+                        <input type="text" name="first_name" placeholder="First Name"
+                            value="{{ edit_employee.first_name if edit_employee else '' }}" required>
+                        <input type="text" name="last_name" placeholder="Last Name"
+                            value="{{ edit_employee.last_name if edit_employee else '' }}" required>
+                    </div>
+                    <input type="email" name="email" placeholder="Email Address"
+                        value="{{ edit_employee.email if edit_employee else '' }}" required>
+                    <div class="input-group">
+                        <input type="text" name="department" placeholder="Department"
+                            value="{{ edit_employee.department if edit_employee else '' }}" required>
+                        <input type="number" name="salary" placeholder="Salary" step="0.01"
+                            value="{{ edit_employee.salary if edit_employee else '' }}" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn">{% if edit_employee %}Update Employee{% else %}Save
+                            Employee{% endif %}</button>
+                        {% if edit_employee %}
+                        <a href="/" class="secondary-btn" style="text-decoration: none; text-align: center;">Cancel</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </section>
+
+            <!-- Table Section -->
+            <section class="glass-card table-section">
+                <div class="table-header">
+                    <h2>Employee List</h2>
+                    <a href="/" class="icon-btn" style="text-decoration: none;">↻</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600">{{ emp.first_name }} {{ emp.last_name }}</div>
+                                </td>
+                                <td>{{ emp.email }}</td>
+                                <td>{{ emp.department }}</td>
+                                <td>${{ "{:,.2f}".format(emp.salary) }}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="/edit/{{ emp.id }}" class="edit-btn"
+                                            style="text-decoration: none;">Edit</a>
+                                        <a href="/delete/{{ emp.id }}" class="delete-btn" style="text-decoration: none;"
+                                            onclick="return confirm('Delete this employee?')">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not employees %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-dim);">No employees found.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>
